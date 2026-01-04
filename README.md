@@ -335,16 +335,24 @@ Full API docs available at: http://localhost:3000/api
 
 ## 🤝 Contributing
 
-Contributions welcome! Please:
+**This project is primarily for personal use and is not actively maintained.**
 
-1. Fork the repository
-2. Create a feature branch
-3. Test thoroughly
-4. Submit a pull request
+However, community contributions are **welcome and encouraged**! Feel free to fork, modify, and submit pull requests.
+
+**Want to contribute?** See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+**Areas looking for contributions:**
+- Automated tests (Jest/Vitest)
+- Manual metadata editing
+- Search functionality
+- Authentication system
+- Advanced features (see CONTRIBUTING.md)
 
 ## 📄 License
 
-MIT License - See LICENSE file for details
+MIT License - See [LICENSE](LICENSE) file for details.
+
+**TL;DR**: You are free to use, modify, and distribute this software. No warranty provided.
 
 ## 🙏 Credits
 
