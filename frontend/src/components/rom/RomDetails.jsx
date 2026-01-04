@@ -11,8 +11,19 @@ export default function RomDetails({ rom, onClose, onDeleted }) {
   const [isFavorite, setIsFavorite] = useState(rom.favorite === 1 || rom.favorite === true);
   const [toggling, setToggling] = useState(false);
 
+  // Use current hostname for cover images (works for localhost and IP access)
+  const getApiHost = () => {
+    if (import.meta.env.VITE_API_BASE_URL) {
+      return import.meta.env.VITE_API_BASE_URL.replace('/api', '');
+    }
+    if (import.meta.env.DEV) {
+      return `http://${window.location.hostname}:3000`;
+    }
+    return ''; // Production uses relative paths
+  };
+
   const coverUrl = rom.cover_image_path
-    ? `http://localhost:3000/covers/${rom.cover_image_path.split('/').pop()}`
+    ? `${getApiHost()}/covers/${rom.cover_image_path.split('/').pop()}`
     : '/placeholder.png';
 
   const handleToggleFavorite = async () => {

@@ -59,9 +59,18 @@ if (config.NODE_ENV === 'development') {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files (covers, screenshots)
-app.use('/covers', express.static(path.join(__dirname, '../storage/covers')));
-app.use('/screenshots', express.static(path.join(__dirname, '../storage/screenshots')));
+// Serve static files (covers, screenshots) with CORS headers
+app.use('/covers', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+}, express.static(path.join(__dirname, '../storage/covers')));
+
+app.use('/screenshots', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+}, express.static(path.join(__dirname, '../storage/screenshots')));
 
 // Health check endpoint (for Docker)
 app.get('/api/health', (req, res) => {
