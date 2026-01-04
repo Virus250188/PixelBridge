@@ -372,4 +372,4 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ---
 
-<sub>Built with ❤️ using VS Code and [Claude Code](https://claude.com/claude-code)</sub>
+<sub>Built with 🎮 through **Vibecoding** - Where vision meets code. Powered by [Claude Code](https://claude.com/claude-code)</sub>
