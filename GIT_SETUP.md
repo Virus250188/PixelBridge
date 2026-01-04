@@ -36,7 +36,7 @@ git config --list | grep user
 ### 4. Lokales Repository initialisieren
 
 ```bash
-cd /Users/virus/Desktop/RetroArch_Addon
+cd /path/to/pixelbridge
 
 # Git initialisieren
 git init
@@ -496,7 +496,7 @@ xcode-select --install
 
 ```bash
 # In richtiges Verzeichnis wechseln
-cd /Users/virus/Desktop/RetroArch_Addon
+cd /path/to/pixelbridge
 
 # Git initialisieren
 git init

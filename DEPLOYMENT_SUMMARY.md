@@ -270,7 +270,7 @@ docker-compose down
 ### Lokales Repo initialisieren
 
 ```bash
-cd /Users/virus/Desktop/RetroArch_Addon
+cd /path/to/pixelbridge
 
 # Git initialisieren (falls noch nicht)
 git init
