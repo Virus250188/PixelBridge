@@ -369,3 +369,7 @@ MIT License - See [LICENSE](LICENSE) file for details.
 ---
 
 **PixelBridge** - Bridge your retro gaming library to the modern era 🎮✨
+
+---
+
+<sub>Built with ❤️ using VS Code and [Claude Code](https://claude.com/claude-code)</sub>
