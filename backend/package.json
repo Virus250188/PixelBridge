@@ -1,0 +1,39 @@
+{
+  "name": "pixelbridge-backend",
+  "version": "1.0.0",
+  "description": "PixelBridge - ROM Library Bridge to Apple TV RetroArch",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "migrate": "node src/database/migrate.js",
+    "seed": "node src/database/seed.js"
+  },
+  "keywords": [
+    "retroarch",
+    "rom",
+    "library",
+    "apple-tv",
+    "tvos"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "buffer-crc32": "^1.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "extract-zip": "^2.0.1",
+    "form-data": "^4.0.0",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.0-rc.4",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

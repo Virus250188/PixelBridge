@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # Backend API Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pixelbridge-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Server Config
+      - NODE_ENV=production
+      - PORT=3000
+
+      # Database (mapped to volume)
+      - DATABASE_PATH=/app/database/retroarch.db
+
+      # Storage (mapped to volume)
+      - STORAGE_PATH=/app/storage
+      - ROMS_PATH=/app/storage/roms
+      - COVERS_PATH=/app/storage/covers
+      - METADATA_PATH=/app/storage/metadata
+
+      # RetroArch Apple TV
+      - RETROARCH_IP=${RETROARCH_IP:-192.168.6.125}
+      - RETROARCH_PORT=${RETROARCH_PORT:-80}
+
+      # IGDB API Credentials
+      - IGDB_CLIENT_ID=${IGDB_CLIENT_ID}
+      - IGDB_ACCESS_TOKEN=${IGDB_ACCESS_TOKEN}
+
+      # ScreenScraper (optional)
+      - SCREENSCRAPER_DEV_ID=${SCREENSCRAPER_DEV_ID:-}
+      - SCREENSCRAPER_DEV_PASSWORD=${SCREENSCRAPER_DEV_PASSWORD:-}
+      - SCREENSCRAPER_USERNAME=${SCREENSCRAPER_USERNAME:-}
+      - SCREENSCRAPER_PASSWORD=${SCREENSCRAPER_PASSWORD:-}
+
+      # File Limits
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE:-4294967296}
+      - ALLOWED_EXTENSIONS=${ALLOWED_EXTENSIONS:-.nes,.snes,.sfc,.gb,.gbc,.gba,.iso,.bin,.cue,.smd,.md,.gen,.gg,.cdi,.gdi,.zip,.7z}
+
+      # CORS
+      - CORS_ORIGIN=http://localhost
+    volumes:
+      # Persistent storage for ROMs, covers, metadata, saves
+      - pixelbridge-storage:/app/storage
+
+      # Persistent database
+      - pixelbridge-database:/app/database
+    networks:
+      - pixelbridge-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Frontend Web UI
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pixelbridge-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"  # Binds to all interfaces (0.0.0.0:80) - accessible via IP
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - pixelbridge-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+networks:
+  pixelbridge-network:
+    driver: bridge
+
+volumes:
+  # Named volumes for data persistence
+  pixelbridge-storage:
+    driver: local
+  pixelbridge-database:
+    driver: local

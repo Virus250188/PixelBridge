@@ -1,0 +1,50 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Development files
+.git/
+.gitignore
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Testing
+coverage/
+.nyc_output/
+
+# Build artifacts
+dist/
+build/
+
+# Documentation
+README.md
+docs/
+
+# Storage (will be mounted as volumes)
+backend/storage/*
+!backend/storage/.gitkeep
+backend/database/*
+!backend/database/.gitkeep
+
+# Temporary files
+*.tmp
+.cache/
