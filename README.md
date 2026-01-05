@@ -52,6 +52,13 @@
 
 ## 🚀 Quick Start with Docker
 
+PixelBridge is available on Docker Hub for easy installation:
+
+- **All-in-One** (Recommended): [`miguel1988/pixelbridge`](https://hub.docker.com/r/miguel1988/pixelbridge)
+- Separate Images (for advanced setups):
+  - Backend: [`miguel1988/pixelbridge-backend`](https://hub.docker.com/r/miguel1988/pixelbridge-backend)
+  - Frontend: [`miguel1988/pixelbridge-frontend`](https://hub.docker.com/r/miguel1988/pixelbridge-frontend)
+
 ### Prerequisites
 
 - Docker & Docker Compose installed

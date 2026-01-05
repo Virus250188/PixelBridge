@@ -1,0 +1,47 @@
+# Node modules (will be installed in container)
+node_modules/
+npm-debug.log
+
+# Development files
+.env
+.env.local
+.env.*.local
+
+# Database
+database/*.db
+database/*.db-*
+
+# Storage
+storage/roms/*
+storage/covers/*
+storage/metadata/*
+storage/saves/*
+storage/temp/*
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Test
+coverage/
+.nyc_output/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
