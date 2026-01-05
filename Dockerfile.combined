@@ -33,8 +33,8 @@ COPY --from=backend-builder /app/backend ./backend
 # Copy Frontend build
 COPY --from=frontend-builder /app/frontend/dist /usr/share/nginx/html
 
-# Copy Nginx configuration
-COPY frontend/nginx.conf /etc/nginx/http.d/default.conf
+# Copy Nginx configuration for combined container (uses localhost:3000 instead of backend:3000)
+COPY nginx.combined.conf /etc/nginx/http.d/default.conf
 
 # Create storage directories
 RUN mkdir -p /app/backend/storage/roms \
