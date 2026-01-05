@@ -38,4 +38,3 @@ coverage/
 Dockerfile
 .dockerignore
 docker-compose*.yml
-nginx.conf
