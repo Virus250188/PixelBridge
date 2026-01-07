@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>PixelBridge</Name>
+  <Repository>virus250188/pixelbridge-frontend:latest</Repository>
+  <Registry>https://hub.docker.com/r/virus250188/pixelbridge-frontend</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/Virus250188/PixelBridge/issues</Support>
+  <Project>https://github.com/Virus250188/PixelBridge</Project>
+  <Overview>
+    PixelBridge is a modern web-based ROM library manager that bridges your retro gaming collection to RetroArch on Apple TV.
+
+    Features:
+    - Multi-Platform Support (25+ retro platforms)
+    - Smart Library Management with cover art
+    - Automatic Metadata from IGDB API
+    - Apple TV Sync via RetroArch WebUI
+    - Save Game Management
+    - Playlist Generation
+    - Favorites System
+    - Pixel Art UI
+
+    This template installs both the frontend and backend as a single stack.
+  </Overview>
+  <Category>GameServers: Status:Stable</Category>
+  <WebUI>http://[IP]:[PORT:80]</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/Virus250188/PixelBridge/main/unraid-template.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/Virus250188/PixelBridge/main/frontend/public/logo-banner-transparent.png</Icon>
+  <ExtraParams>--network=pixelbridge-network</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>
+    PixelBridge Backend container must be running first.
+    IGDB API credentials are required for metadata fetching.
+  </Requires>
+
+  <!-- Frontend Container Config -->
+  <Config Name="WebUI Port" Target="80" Default="8080" Mode="tcp" Description="HTTP Port for Web Interface" Type="Port" Display="always" Required="true" Mask="false">8080</Config>
+
+  <!-- Backend Container (runs alongside frontend) -->
+  <ExtraContainers>
+    <Container>
+      <Name>PixelBridge-Backend</Name>
+      <Repository>virus250188/pixelbridge-backend:latest</Repository>
+      <Network>pixelbridge-network</Network>
+      <Privileged>false</Privileged>
+
+      <!-- Backend API Port -->
+      <Config Name="Backend API Port" Target="3000" Default="3000" Mode="tcp" Description="Backend API Port" Type="Port" Display="always" Required="true" Mask="false">3000</Config>
+
+      <!-- Volumes -->
+      <Config Name="ROMs Storage" Target="/app/storage/roms" Default="/mnt/user/appdata/pixelbridge/roms" Mode="rw" Description="ROM files storage" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/pixelbridge/roms</Config>
+      <Config Name="Covers Storage" Target="/app/storage/covers" Default="/mnt/user/appdata/pixelbridge/covers" Mode="rw" Description="Cover images storage" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/pixelbridge/covers</Config>
+      <Config Name="Database" Target="/app/database" Default="/mnt/user/appdata/pixelbridge/database" Mode="rw" Description="SQLite database" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/pixelbridge/database</Config>
+      <Config Name="Metadata Storage" Target="/app/storage/metadata" Default="/mnt/user/appdata/pixelbridge/metadata" Mode="rw" Description="Metadata cache" Type="Path" Display="advanced" Required="false" Mask="false">/mnt/user/appdata/pixelbridge/metadata</Config>
+      <Config Name="Saves Backup" Target="/app/storage/saves" Default="/mnt/user/appdata/pixelbridge/saves" Mode="rw" Description="Save game backups" Type="Path" Display="advanced" Required="false" Mask="false">/mnt/user/appdata/pixelbridge/saves</Config>
+
+      <!-- Environment Variables -->
+      <Config Name="RetroArch IP" Target="RETROARCH_IP" Default="192.168.1.100" Mode="" Description="Apple TV RetroArch IP Address" Type="Variable" Display="always" Required="true" Mask="false">192.168.1.100</Config>
+      <Config Name="RetroArch Port" Target="RETROARCH_PORT" Default="80" Mode="" Description="Apple TV RetroArch Port" Type="Variable" Display="always" Required="true" Mask="false">80</Config>
+
+      <Config Name="IGDB Client ID" Target="IGDB_CLIENT_ID" Default="" Mode="" Description="IGDB API Client ID (get from https://dev.twitch.tv/console/apps)" Type="Variable" Display="always" Required="true" Mask="false"></Config>
+      <Config Name="IGDB Access Token" Target="IGDB_ACCESS_TOKEN" Default="" Mode="" Description="IGDB API Access Token" Type="Variable" Display="always" Required="true" Mask="true"></Config>
+
+      <Config Name="Max File Size" Target="MAX_FILE_SIZE" Default="4294967296" Mode="" Description="Maximum ROM file size in bytes (4GB default)" Type="Variable" Display="advanced" Required="false" Mask="false">4294967296</Config>
+      <Config Name="Node Environment" Target="NODE_ENV" Default="production" Mode="" Description="Node.js environment" Type="Variable" Display="advanced" Required="false" Mask="false">production</Config>
+    </Container>
+  </ExtraContainers>
+</Container>

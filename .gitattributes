@@ -1,0 +1,30 @@
+# Auto detect text files
+* text=auto
+
+# Force LF for shell scripts
+*.sh text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.db binary
+*.sqlite binary
+
+# Archives
+*.zip binary
+*.7z binary
+*.nes binary
+*.snes binary
+*.sfc binary
+*.gba binary
+*.iso binary
+
+# Force LF for config files
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+Dockerfile text eol=lf

@@ -1,0 +1,83 @@
+# PixelBridge - All-in-One Image for Unraid
+# Combines Backend + Frontend + Nginx in one container
+
+# Build Frontend
+FROM node:18-alpine AS frontend-builder
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run build
+
+# Build Backend Dependencies
+FROM node:18-alpine AS backend-builder
+WORKDIR /app/backend
+RUN apk add --no-cache python3 make g++
+COPY backend/package*.json ./
+RUN npm ci --production && npm cache clean --force
+# Copy all backend source files
+COPY backend/ ./
+
+# Final Combined Image
+FROM node:18-alpine
+
+# Install Nginx and dependencies
+RUN apk add --no-cache nginx python3 make g++ supervisor
+
+# Create app directory
+WORKDIR /app
+
+# Copy Backend from builder (includes source + node_modules)
+COPY --from=backend-builder /app/backend ./backend
+
+# Copy Frontend build
+COPY --from=frontend-builder /app/frontend/dist /usr/share/nginx/html
+
+# Copy Nginx configuration for combined container (uses localhost:3000 instead of backend:3000)
+# Remove default nginx config and use our combined config
+RUN rm -f /etc/nginx/http.d/default.conf
+COPY nginx.combined.conf /etc/nginx/http.d/default.conf
+
+# Copy and set up entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Create nginx run directory (not in volume)
+RUN mkdir -p /run/nginx
+
+# Supervisor configuration for running both services
+RUN echo '[supervisord]' > /etc/supervisord.conf && \
+    echo 'nodaemon=true' >> /etc/supervisord.conf && \
+    echo 'user=root' >> /etc/supervisord.conf && \
+    echo '' >> /etc/supervisord.conf && \
+    echo '[program:backend]' >> /etc/supervisord.conf && \
+    echo 'directory=/app/backend' >> /etc/supervisord.conf && \
+    echo 'command=node server.js' >> /etc/supervisord.conf && \
+    echo 'autostart=true' >> /etc/supervisord.conf && \
+    echo 'autorestart=true' >> /etc/supervisord.conf && \
+    echo 'stdout_logfile=/dev/stdout' >> /etc/supervisord.conf && \
+    echo 'stdout_logfile_maxbytes=0' >> /etc/supervisord.conf && \
+    echo 'stderr_logfile=/dev/stderr' >> /etc/supervisord.conf && \
+    echo 'stderr_logfile_maxbytes=0' >> /etc/supervisord.conf && \
+    echo '' >> /etc/supervisord.conf && \
+    echo '[program:nginx]' >> /etc/supervisord.conf && \
+    echo 'command=nginx -g "daemon off;"' >> /etc/supervisord.conf && \
+    echo 'autostart=true' >> /etc/supervisord.conf && \
+    echo 'autorestart=true' >> /etc/supervisord.conf && \
+    echo 'stdout_logfile=/dev/stdout' >> /etc/supervisord.conf && \
+    echo 'stdout_logfile_maxbytes=0' >> /etc/supervisord.conf && \
+    echo 'stderr_logfile=/dev/stderr' >> /etc/supervisord.conf && \
+    echo 'stderr_logfile_maxbytes=0' >> /etc/supervisord.conf
+
+# Expose ports
+EXPOSE 80 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Use entrypoint to ensure directories exist before starting services
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Start supervisor to run both services
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
