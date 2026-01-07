@@ -295,17 +295,48 @@ exports.syncWithRetroArch = async (req, res, next) => {
       console.log('🔧 Ensuring directories exist on Apple TV...');
       await retroarchService.ensureDirectoriesExist();
 
-      const romsToPush = roms.map(rom => ({
-        filePath: rom.file_path,
-        fileName: rom.file_name
-      }));
+      // Build list of files to push (handles multi-file ROMs like PS1 .cue/.bin)
+      const romsToPush = [];
+
+      for (const rom of roms) {
+        // Check if ROM is in a subdirectory (multi-file ROM)
+        const romDir = path.dirname(rom.file_path);
+        const romParentDir = path.dirname(romDir);
+        const isMultiFile = rom.file_name.includes('/') || rom.file_name.includes(path.sep);
+
+        if (isMultiFile) {
+          // Multi-file ROM: Push ALL files in the game directory
+          const gameDir = path.dirname(rom.file_path);
+          console.log(`📁 Multi-file ROM detected: ${rom.title} - scanning ${gameDir}`);
+
+          if (fs.existsSync(gameDir)) {
+            const files = fs.readdirSync(gameDir);
+            for (const file of files) {
+              const filePath = path.join(gameDir, file);
+              if (fs.statSync(filePath).isFile()) {
+                romsToPush.push({
+                  filePath: filePath,
+                  fileName: file
+                });
+                console.log(`  📄 Will push: ${file}`);
+              }
+            }
+          }
+        } else {
+          // Single-file ROM: Push only the main file
+          romsToPush.push({
+            filePath: rom.file_path,
+            fileName: rom.file_name
+          });
+        }
+      }
 
       const pushResult = await retroarchService.pushMultipleRoms(romsToPush);
       syncLog.phase3_push.pushed = pushResult.success;
       syncLog.phase3_push.failed = pushResult.failed;
       syncLog.phase3_push.status = 'completed';
 
-      console.log(`✅ Pushed ${pushResult.success.length}/${romsToPush.length} ROMs`);
+      console.log(`✅ Pushed ${pushResult.success.length}/${romsToPush.length} files`);
     } catch (error) {
       syncLog.phase3_push.status = 'failed';
       syncLog.errors.push(`Push phase: ${error.message}`);

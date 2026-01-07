@@ -112,7 +112,7 @@ export default function RomDetails({ rom, onClose, onDeleted }) {
               {rom.rating && (
                 <div className="info-item">
                   <span className="info-label">Rating</span>
-                  <span className="info-value">{rom.rating}/100</span>
+                  <span className="info-value">{rom.rating}/10</span>
                 </div>
               )}
 

@@ -85,6 +85,11 @@ const PLATFORM_CORE_MAP = {
     coreName: 'Sony - PlayStation (Beetle PSX HW)',
     dbName: 'Sony - PlayStation.lpl'
   },
+  'psx': {
+    corePath: ':/Frameworks/mednafen_psx_hw_libretro.framework',
+    coreName: 'Sony - PlayStation (Beetle PSX HW)',
+    dbName: 'Sony - PlayStation.lpl'
+  },
   'ps2': {
     corePath: ':/Frameworks/pcsx2_libretro.framework',
     coreName: 'Sony - PlayStation 2 (PCSX2)',
@@ -160,6 +165,7 @@ function getCoreName(platformShortName) {
     'mastersystem': 'Genesis Plus GX',
     'gamegear': 'Genesis Plus GX',
     'ps1': 'Beetle PSX HW',
+    'psx': 'Beetle PSX HW',
     'ps2': 'PCSX2',
     'psp': 'PPSSPP',
     'arcade': 'MAME',
@@ -208,9 +214,13 @@ function generatePlaylistEntry(rom, platformShortName, fileBuffer = null) {
     crc32 = calculateCRC32(fileBuffer);
   }
 
+  // For multi-file ROMs, file_name may contain a subdirectory (e.g., "Game Name/game.cue")
+  // But files are pushed directly to /downloads/, so we need just the base filename
+  const baseFileName = path.basename(rom.file_name);
+
   return {
-    path: `~/Library/Caches/RetroArch/downloads/${rom.file_name}`,
-    label: rom.title || rom.file_name.replace(/\.[^/.]+$/, ''),
+    path: `~/Library/Caches/RetroArch/downloads/${baseFileName}`,
+    label: rom.title || baseFileName.replace(/\.[^/.]+$/, ''),
     core_path: platformConfig.corePath,
     core_name: platformConfig.coreName,
     crc32: `${crc32}|crc`,

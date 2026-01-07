@@ -21,8 +21,8 @@ COPY backend/ ./
 # Final Combined Image
 FROM node:18-alpine
 
-# Install Nginx and dependencies
-RUN apk add --no-cache nginx python3 make g++ supervisor
+# Install Nginx, 7zip, and dependencies
+RUN apk add --no-cache nginx python3 make g++ supervisor p7zip
 
 # Create app directory
 WORKDIR /app

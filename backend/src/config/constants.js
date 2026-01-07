@@ -97,7 +97,7 @@ const RETROARCH_DEFAULTS = {
   UPLOAD_ENDPOINT: '/upload',
   DEFAULT_UPLOAD_PATH: 'downloads',
   CONNECTION_TIMEOUT: 5000,
-  UPLOAD_TIMEOUT: 120000
+  UPLOAD_TIMEOUT: 600000                  // 10 minutes for large ROMs
 };
 
 // File hash algorithms
